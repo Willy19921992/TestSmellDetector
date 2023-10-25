@@ -115,6 +115,8 @@ public class MainPlugin extends AbstractMojo {
                 }
                 resultsWriter.writeLine(columnValues);
             }
+            
+            resultsWriter.writeFooter();
     
             System.out.println("end");
         }

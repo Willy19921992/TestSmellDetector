@@ -7,7 +7,7 @@ import java.util.Calendar;
 import java.util.List;
 
 /**
- * This class is utilized to write output to a CSV file
+ * This class is utilized to write output to a HTML file
  */
 public class ResultsWriter {
 
@@ -20,7 +20,7 @@ public class ResultsWriter {
      */
     private ResultsWriter() throws IOException {
         String time =  String.valueOf(Calendar.getInstance().getTimeInMillis());
-        outputFile = MessageFormat.format("{0}_{1}_{2}.{3}", "Output","TestSmellDetection",time, "csv");
+        outputFile = MessageFormat.format("{0}_{1}_{2}.{3}", "Output","TestSmellDetection",time, "html");
         writer = new FileWriter(outputFile,false);
     }
 
@@ -34,40 +34,48 @@ public class ResultsWriter {
     }
 
     /**
-     * Writes column names into the CSV file
+     * Writes column names into the HTML file
      * @param columnNames the column names
      * @throws IOException
      */
     public void writeColumnName(List<String> columnNames) throws IOException {
-        writeOutput(columnNames);
+        writer = new FileWriter(outputFile,true);
+        
+        writer.append("<!DOCTYPE html><html><body><table><tr>");
+        for(int i = 0; i < columnNames.size(); i++)
+            writer.append("<th>" + columnNames.get(i) + "</th>");
+        writer.append("</tr>");
+        
+        writer.flush();
+        writer.close();
     }
 
     /**
-     * Writes column values into the CSV file
+     * Writes column values into the HTML file
      * @param columnValues the column values
      * @throws IOException
      */
     public void writeLine(List<String> columnValues) throws IOException {
-        writeOutput(columnValues);
+        writer = new FileWriter(outputFile,true);
+        
+        writer.append("<tr>");
+        for(int i = 0; i < columnValues.size(); i++)
+            writer.append("<td>" + columnValues.get(i) + "</td>");
+        writer.append("</tr>");
+        
+        writer.flush();
+        writer.close();
     }
-
+    
     /**
-     * Appends the input values into the CSV file
-     * @param dataValues the data that needs to be written into the file
+     * Writes footer into the HTML file
      * @throws IOException
      */
-    private void writeOutput(List<String> dataValues)throws IOException {
+    public void writeFooter() throws IOException {
         writer = new FileWriter(outputFile,true);
-
-        for (int i=0; i<dataValues.size(); i++) {
-            writer.append(String.valueOf(dataValues.get(i)));
-
-            if(i!=dataValues.size()-1)
-                writer.append(",");
-            else
-                writer.append(System.lineSeparator());
-
-        }
+        
+        writer.append("</table></body></html>");
+        
         writer.flush();
         writer.close();
     }
